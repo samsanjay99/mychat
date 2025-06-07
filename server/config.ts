@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
+import { Secret } from 'jsonwebtoken';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,7 +14,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 export const DATABASE_URL = process.env.DATABASE_URL || "";
 
 // JWT configuration
-export const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(64).toString('hex');
+export const JWT_SECRET: Secret = process.env.JWT_SECRET || crypto.randomBytes(64).toString('hex');
 export const JWT_EXPIRY = process.env.JWT_EXPIRY || '7d';
 
 // Server configuration

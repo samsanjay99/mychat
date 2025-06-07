@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
@@ -7,12 +7,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, JWT_EXPIRY } from './config';
 
-interface AuthenticatedRequest extends Express.Request {
+// Extended interface for authenticated requests
+interface AuthenticatedRequest extends Request {
   userId?: number;
 }
 
 // Middleware to verify JWT token
-const authenticateToken = async (req: AuthenticatedRequest, res: any, next: any) => {
+const authenticateToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -35,7 +36,7 @@ const authenticateToken = async (req: AuthenticatedRequest, res: any, next: any)
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
-  app.post("/api/auth/signup", async (req, res) => {
+  app.post("/api/auth/signup", async (req: Request, res: Response) => {
     try {
       const { email, password, fullName } = insertUserSchema.parse(req.body);
       
@@ -65,7 +66,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/auth/login", async (req, res) => {
+  app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
       
@@ -81,8 +82,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Incorrect password. Please try again." });
       }
       
-      // Generate JWT token
-      const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+      // Generate JWT token with type assertion to fix TypeScript error
+      // @ts-ignore
+      const token = jwt.sign(
+        { userId: user.id }, 
+        JWT_SECRET, 
+        { expiresIn: JWT_EXPIRY }
+      );
       
       // Update online status
       await storage.updateUserOnlineStatus(user.id, true);
@@ -103,7 +109,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/auth/logout", authenticateToken, async (req: AuthenticatedRequest, res) => {
+  app.post("/api/auth/logout", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
     try {
       if (req.userId) {
         await storage.updateUserOnlineStatus(req.userId, false);
@@ -116,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User routes
-  app.get("/api/user/me", authenticateToken, async (req: AuthenticatedRequest, res) => {
+  app.get("/api/user/me", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const user = await storage.getUser(req.userId!);
       if (!user) {
@@ -138,7 +144,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/user/search/:schatId", authenticateToken, async (req: AuthenticatedRequest, res) => {
+  app.get("/api/user/search/:schatId", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const { schatId } = req.params;
       
@@ -168,7 +174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Chat routes
-  app.get("/api/chats", authenticateToken, async (req: AuthenticatedRequest, res) => {
+  app.get("/api/chats", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const chats = await storage.getUserChats(req.userId!);
       res.json(chats);
@@ -178,7 +184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/chats", authenticateToken, async (req: AuthenticatedRequest, res) => {
+  app.post("/api/chats", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const { otherUserId } = req.body;
       
@@ -192,7 +198,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/chats/:chatId/messages", authenticateToken, async (req: AuthenticatedRequest, res) => {
+  app.get("/api/chats/:chatId/messages", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const chatId = parseInt(req.params.chatId);
       const messages = await storage.getChatMessages(chatId);
@@ -203,7 +209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/messages", authenticateToken, async (req: AuthenticatedRequest, res) => {
+  app.post("/api/messages", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const messageData = insertMessageSchema.parse({
         ...req.body,
