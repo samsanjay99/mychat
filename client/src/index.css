@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 207 90% 54%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 60 4.8% 95.9%;
+  --secondary-foreground: 24 9.8% 10%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 20 14.3% 4.1%;
+  --radius: 0.5rem;
+
+  /* WhatsApp-inspired colors */
+  --whatsapp: 141 68% 48%; /* #25D366 */
+  --whatsapp-dark: 158 68% 38%; /* #128C7E */
+  --chat-bg: 42 47% 89%; /* #E5DDD5 */
+  --received-msg: 0 0% 100%; /* #FFFFFF */
+  --sent-msg: 83 50% 87%; /* #DCF8C6 */
+  --text-primary: 210 17% 10%; /* #111B21 */
+  --text-secondary: 213 14% 40%; /* #54656F */
+  --border-light: 205 20% 92%; /* #E9EDEF */
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 207 90% 54%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .whatsapp-bg {
+    background-color: hsl(var(--whatsapp));
+  }
+  
+  .whatsapp-dark-bg {
+    background-color: hsl(var(--whatsapp-dark));
+  }
+  
+  .text-whatsapp {
+    color: hsl(var(--whatsapp));
+  }
+  
+  .chat-bg {
+    background-color: hsl(var(--chat-bg));
+  }
+  
+  .received-msg-bg {
+    background-color: hsl(var(--received-msg));
+  }
+  
+  .sent-msg-bg {
+    background-color: hsl(var(--sent-msg));
+  }
+  
+  .text-primary-custom {
+    color: hsl(var(--text-primary));
+  }
+  
+  .text-secondary-custom {
+    color: hsl(var(--text-secondary));
+  }
+  
+  .border-light-custom {
+    border-color: hsl(var(--border-light));
+  }
+
+  .message-bubble {
+    max-width: 70%;
+    word-wrap: break-word;
+  }
+  
+  .typing-animation {
+    animation: typing 1.4s infinite;
+  }
+  
+  @keyframes typing {
+    0%, 60%, 100% { 
+      transform: translateY(0); 
+    }
+    30% { 
+      transform: translateY(-10px); 
+    }
+  }
+  
+  .online-indicator {
+    width: 12px;
+    height: 12px;
+    background: hsl(var(--whatsapp));
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+}
