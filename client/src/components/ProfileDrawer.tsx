@@ -6,10 +6,20 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Copy, LogOut, Edit3, Check, X } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryFn, apiRequest, queryClient } from "@/lib/queryClient";
+import { getQueryFn, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { removeToken } from "@/lib/utils";
 import { useLocation } from "wouter";
+
+interface User {
+  id: number;
+  fullName: string;
+  email: string;
+  schatId: string;
+  profileImageUrl?: string;
+  status?: string;
+  isOnline: boolean;
+}
 
 interface ProfileDrawerProps {
   open: boolean;
@@ -24,7 +34,7 @@ export function ProfileDrawer({ open, onOpenChange }: ProfileDrawerProps) {
   const [statusText, setStatusText] = useState("");
   const [nameText, setNameText] = useState("");
 
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading } = useQuery<User>({
     queryKey: ["/api/user/me"],
     queryFn: getQueryFn({ on401: "throw" }),
   });
@@ -40,7 +50,7 @@ export function ProfileDrawer({ open, onOpenChange }: ProfileDrawerProps) {
         description: "You have been signed out",
       });
       onOpenChange(false);
-      setLocation("/");
+      window.location.href = "/";
     },
   });
 
@@ -48,10 +58,7 @@ export function ProfileDrawer({ open, onOpenChange }: ProfileDrawerProps) {
     if (user?.schatId) {
       try {
         await navigator.clipboard.writeText(user.schatId);
-        toast({
-          title: "Copied!",
-          description: "Schat ID copied to clipboard",
-        });
+        toast({ title: "Copied!", description: "Schat ID copied to clipboard" });
       } catch (error) {
         toast({
           title: "Failed to copy",
@@ -74,23 +81,17 @@ export function ProfileDrawer({ open, onOpenChange }: ProfileDrawerProps) {
 
   const saveStatus = () => {
     // TODO: Implement status update API
-    toast({
-      title: "Status updated",
-      description: "Your status has been updated",
-    });
+    toast({ title: "Status updated", description: "Your status has been updated" });
     setIsEditingStatus(false);
   };
 
   const saveName = () => {
     // TODO: Implement name update API
-    toast({
-      title: "Name updated",
-      description: "Your name has been updated",
-    });
+    toast({ title: "Name updated", description: "Your name has been updated" });
     setIsEditingName(false);
   };
 
-  if (isLoading) {
+  if (isLoading || !user) {
     return null;
   }
 
@@ -107,15 +108,16 @@ export function ProfileDrawer({ open, onOpenChange }: ProfileDrawerProps) {
           <div className="relative -mt-16 mx-6 mb-6">
             <div className="relative inline-block">
               <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
-                <AvatarImage src={user?.profileImageUrl} />
+                <AvatarImage src={user.profileImageUrl} />
                 <AvatarFallback className="bg-gray-200 text-gray-600 text-2xl">
-                  {user?.fullName?.charAt(0).toUpperCase()}
+                  {user.fullName.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <Button
                 variant="ghost"
                 size="icon"
                 className="absolute bottom-0 right-0 bg-whatsapp hover:bg-whatsapp-dark text-white rounded-full w-8 h-8 shadow-lg"
+                onClick={() => toast({ title: "Feature coming soon" })}
               >
                 <Camera className="h-4 w-4" />
               </Button>
@@ -135,26 +137,16 @@ export function ProfileDrawer({ open, onOpenChange }: ProfileDrawerProps) {
                     className="flex-1"
                     placeholder="Enter your name"
                   />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={saveName}
-                    className="text-green-600"
-                  >
+                  <Button variant="ghost" size="sm" onClick={saveName} className="text-green-600">
                     <Check className="h-4 w-4" />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsEditingName(false)}
-                    className="text-red-500"
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => setIsEditingName(false)} className="text-red-500">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="text-primary-custom font-medium">{user?.fullName}</span>
+                  <span className="text-primary-custom font-medium">{user.fullName}</span>
                   <Button variant="ghost" size="sm" onClick={handleNameEdit}>
                     <Edit3 className="h-4 w-4 text-secondary-custom" />
                   </Button>
@@ -162,7 +154,7 @@ export function ProfileDrawer({ open, onOpenChange }: ProfileDrawerProps) {
               )}
             </div>
 
-            {/* Status */}
+            {/* About */}
             <div className="space-y-2">
               <Label className="text-sm text-secondary-custom">About</Label>
               {isEditingStatus ? (
@@ -173,27 +165,17 @@ export function ProfileDrawer({ open, onOpenChange }: ProfileDrawerProps) {
                     className="flex-1"
                     placeholder="Enter your status"
                   />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={saveStatus}
-                    className="text-green-600"
-                  >
+                  <Button variant="ghost" size="sm" onClick={saveStatus} className="text-green-600">
                     <Check className="h-4 w-4" />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsEditingStatus(false)}
-                    className="text-red-500"
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => setIsEditingStatus(false)} className="text-red-500">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <span className="text-primary-custom">
-                    {user?.status || "Hey there! I am using Schat."}
+                    {user.status || "Hey there! I am using Schat."}
                   </span>
                   <Button variant="ghost" size="sm" onClick={handleStatusEdit}>
                     <Edit3 className="h-4 w-4 text-secondary-custom" />
@@ -201,51 +183,43 @@ export function ProfileDrawer({ open, onOpenChange }: ProfileDrawerProps) {
                 </div>
               )}
             </div>
-
+            
             {/* Schat ID */}
             <div className="space-y-2">
               <Label className="text-sm text-secondary-custom">Schat ID</Label>
               <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span className="text-primary-custom font-mono text-sm">{user?.schatId}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={copySchatId}
-                  className="text-green-600 hover:text-green-700"
-                >
-                  <Copy className="h-4 w-4" />
+                <span className="text-primary-custom font-mono">{user.schatId}</span>
+                <Button variant="ghost" size="sm" onClick={copySchatId}>
+                  <Copy className="h-4 w-4 text-secondary-custom" />
                 </Button>
               </div>
-              <p className="text-xs text-secondary-custom">
-                Share this ID with friends to start chatting
-              </p>
             </div>
 
             {/* Email */}
             <div className="space-y-2">
               <Label className="text-sm text-secondary-custom">Email</Label>
               <div className="p-3 bg-gray-50 rounded-lg">
-                <span className="text-primary-custom">{user?.email}</span>
+                <span className="text-primary-custom">{user.email}</span>
               </div>
             </div>
 
             {/* Online Status */}
             <div className="space-y-2">
-              <Label className="text-sm text-secondary-custom">Status</Label>
+              <Label className="text-sm text-secondary-custom">Online Status</Label>
               <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
-                <div className="online-indicator"></div>
+                <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: user.isOnline ? '#25D366' : '#A0AEC0' }}></div>
                 <span className="text-primary-custom">
-                  {user?.isOnline ? "Online" : "Last seen recently"}
+                  {user.isOnline ? "Online" : "Offline"}
                 </span>
               </div>
             </div>
           </div>
 
           {/* Logout Button */}
-          <div className="p-6 border-t">
+          <div className="p-6 mt-auto border-t">
             <Button
-              variant="destructive"
-              className="w-full"
+              variant="ghost"
+              className="w-full justify-start text-red-500 hover:bg-red-50 hover:text-red-600"
               onClick={() => logoutMutation.mutate()}
               disabled={logoutMutation.isPending}
             >
