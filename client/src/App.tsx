@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 // New header component with hamburger menu
 function AppHeader({ onMenuClick }: { onMenuClick: () => void }) {
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 max-w-md mx-auto">
+    <div className="fixed top-0 left-0 right-0 z-40 max-w-md mx-auto">
       <div className="whatsapp-bg text-white flex justify-between items-center p-4">
         <h1 className="text-xl font-semibold">Schat</h1>
         <Button 
