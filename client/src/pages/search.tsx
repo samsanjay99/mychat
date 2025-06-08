@@ -73,20 +73,7 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <div className="whatsapp-bg text-white p-4 flex items-center space-x-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-white hover:text-gray-200 hover:bg-white/10"
-          onClick={() => setLocation("/")}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-xl font-semibold">New Chat</h1>
-      </div>
-
+    <div className="min-h-screen pt-16">
       {/* Search Input */}
       <div className="p-4 border-b border-light-custom">
         <div className="relative">

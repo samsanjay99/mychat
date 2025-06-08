@@ -11,6 +11,27 @@ import AuthPage from "@/pages/auth";
 import ChatListPage from "@/pages/chat-list";
 import SearchPage from "@/pages/search";
 import ChatPage from "@/pages/chat";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+// New header component with hamburger menu
+function AppHeader({ onMenuClick }: { onMenuClick: () => void }) {
+  return (
+    <div className="fixed top-0 left-0 right-0 z-50 max-w-md mx-auto">
+      <div className="whatsapp-bg text-white flex justify-between items-center p-4">
+        <h1 className="text-xl font-semibold">Schat</h1>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={onMenuClick}
+          className="rounded-full text-white hover:bg-white/20"
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 function Router() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,6 +71,9 @@ function Router() {
 
   return (
     <div className="min-h-screen bg-white pb-20">
+      {/* Add the header with menu button */}
+      <AppHeader onMenuClick={() => setIsProfileOpen(true)} />
+      
       <Switch>
         <Route path="/" component={ChatListPage} />
         <Route path="/search" component={SearchPage} />
@@ -63,7 +87,7 @@ function Router() {
         </Route>
       </Switch>
       
-      <BottomNavigation onProfileClick={() => setIsProfileOpen(true)} />
+      <BottomNavigation />
       <ProfileDrawer open={isProfileOpen} onOpenChange={setIsProfileOpen} />
     </div>
   );

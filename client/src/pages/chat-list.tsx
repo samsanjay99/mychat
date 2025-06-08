@@ -59,15 +59,7 @@ export default function ChatListPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <div className="whatsapp-bg text-white p-4 flex items-center space-x-3">
-        <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-          <MessageSquare className="h-5 w-5 text-green-600" />
-        </div>
-        <h1 className="text-xl font-semibold">Schat</h1>
-      </div>
-
+    <div className="min-h-screen pt-16">
       {/* Chat List */}
       <div className="divide-y border-light-custom">
         {chats.length === 0 ? (

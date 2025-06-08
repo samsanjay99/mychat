@@ -1,9 +1,9 @@
 import { useLocation } from "wouter";
-import { MessageCircle, Search, MoreHorizontal } from "lucide-react";
+import { MessageCircle, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BottomNavigationProps {
-  onProfileClick: () => void;
+  onProfileClick?: () => void;
 }
 
 export function BottomNavigation({ onProfileClick }: BottomNavigationProps) {
@@ -22,12 +22,6 @@ export function BottomNavigation({ onProfileClick }: BottomNavigationProps) {
       path: "/search",
       isActive: location === "/search",
     },
-    {
-      icon: MoreHorizontal,
-      label: "More",
-      onClick: onProfileClick,
-      isActive: false,
-    },
   ];
 
   return (
@@ -39,9 +33,7 @@ export function BottomNavigation({ onProfileClick }: BottomNavigationProps) {
             <button
               key={index}
               onClick={() => {
-                if (item.onClick) {
-                  item.onClick();
-                } else if (item.path) {
+                if (item.path) {
                   setLocation(item.path);
                 }
               }}

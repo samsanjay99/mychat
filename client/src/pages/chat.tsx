@@ -10,6 +10,15 @@ import { formatTime } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 
+interface User {
+  id: number;
+  fullName: string;
+  email: string;
+  schatId: string;
+  profileImageUrl?: string;
+  isOnline: boolean;
+}
+
 interface MessageWithSender {
   id: number;
   chatId: number;
@@ -60,7 +69,7 @@ export default function ChatPage() {
   const chatId = parseInt(params?.chatId || "0");
   const { isConnected, lastMessage, sendMessage } = useWebSocket();
 
-  const { data: currentUser } = useQuery({
+  const { data: currentUser = {} as User } = useQuery<User>({
     queryKey: ["/api/user/me"],
     queryFn: getQueryFn({ on401: "throw" }),
   });
@@ -216,7 +225,7 @@ export default function ChatPage() {
   const otherUser = chat.user1.id === currentUser?.id ? chat.user2 : chat.user1;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pt-16">
       {/* Chat Header */}
       <div className="whatsapp-bg text-white p-4 flex items-center space-x-3">
         <Button
