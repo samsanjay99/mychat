@@ -97,7 +97,10 @@ export function ProfileDrawer({ open, onOpenChange }: ProfileDrawerProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full max-w-sm p-0">
+      <SheetContent
+        side="right"
+        className="w-full max-w-sm p-0 md:max-w-sm"
+      >
         <div className="flex flex-col h-full">
           {/* Header */}
           <SheetHeader className="whatsapp-bg text-white p-6 pb-20">
@@ -125,7 +128,7 @@ export function ProfileDrawer({ open, onOpenChange }: ProfileDrawerProps) {
           </div>
 
           {/* Profile Content */}
-          <div className="flex-1 px-6 space-y-6">
+          <div className="flex-1 px-6 space-y-6 overflow-y-auto">
             {/* Name */}
             <div className="space-y-2">
               <Label className="text-sm text-secondary-custom">Name</Label>
