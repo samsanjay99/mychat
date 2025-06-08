@@ -28,7 +28,7 @@ export default function AuthPage() {
         title: "Welcome back!",
         description: "Login successful",
       });
-      setLocation("/");
+      window.location.href = "/";
     },
     onError: (error: Error) => {
       toast({
