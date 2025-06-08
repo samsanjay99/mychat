@@ -6,24 +6,19 @@ import { Plus, MessageSquare } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+interface User {
+  id: number;
+  fullName: string;
+  email: string;
+  schatId: string;
+  profileImageUrl?: string;
+  isOnline: boolean;
+}
+
 interface ChatListItem {
   id: number;
-  user1: {
-    id: number;
-    fullName: string;
-    email: string;
-    schatId: string;
-    profileImageUrl?: string;
-    isOnline: boolean;
-  };
-  user2: {
-    id: number;
-    fullName: string;
-    email: string;
-    schatId: string;
-    profileImageUrl?: string;
-    isOnline: boolean;
-  };
+  user1: User;
+  user2: User;
   messages: Array<{
     id: number;
     content: string;
@@ -37,12 +32,12 @@ interface ChatListItem {
 export default function ChatListPage() {
   const [, setLocation] = useLocation();
 
-  const { data: currentUser } = useQuery({
+  const { data: currentUser } = useQuery<User>({
     queryKey: ["/api/user/me"],
     queryFn: getQueryFn({ on401: "throw" }),
   });
 
-  const { data: chats = [], isLoading } = useQuery({
+  const { data: chats = [], isLoading } = useQuery<ChatListItem[]>({
     queryKey: ["/api/chats"],
     queryFn: getQueryFn({ on401: "throw" }),
   });
@@ -155,7 +150,7 @@ export default function ChatListPage() {
       </div>
 
       {/* Floating Action Button - positioned above More button */}
-      <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 translate-x-20">
+      <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2">
         <Button
           onClick={() => setLocation("/search")}
           className="whatsapp-bg hover:whatsapp-dark-bg text-white w-14 h-14 rounded-full shadow-lg"
