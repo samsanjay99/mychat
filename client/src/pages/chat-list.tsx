@@ -150,7 +150,7 @@ export default function ChatListPage() {
       </div>
 
       {/* Floating Action Button - positioned above More button */}
-      <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2">
+      <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-40">
         <Button
           onClick={() => setLocation("/search")}
           className="whatsapp-bg hover:whatsapp-dark-bg text-white w-14 h-14 rounded-full shadow-lg"
